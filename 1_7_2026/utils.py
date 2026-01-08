@@ -97,38 +97,41 @@ def defectandmirrors(width: float, length:float, xlength: float, ylengths: list,
     wavelength = 1540 
 
     # Parameters for the computational cell: 
-    pml_padding_x = 2 * math.ceil(2 * wavelength/length)
+    # pml_padding_x = 2 * math.ceil(2 * wavelength/length)
     pml_padding = length
+    beam_padding = 2 # One for each side
+    air_padding = 5 # one side
+    pml_padding_x = 6 # One side approximately one wavelength
     padding_to_pml = 4*length
-    sx = 2*(len(ylengths))-1 + 2* nummirrors  + pml_padding_x # We will scale the dimensions of everything else by the length (for example we scaled the paddings above by the length)
+    sx = 2*(len(ylengths))-1 + 2* nummirrors  #+ pml_padding_x # We will scale the dimensions of everything else by the length (for example we scaled the paddings above by the length)
     sy = 2*(pml_padding + padding_to_pml + width)/length  
 
-    cell = mp.Vector3(sx,sy)
+    cell = mp.Vector3(sx + beam_padding + 2* air_padding + 2 * pml_padding_x,sy)
 
     # Defining our waveguide given the parameters, meep assumes periodic structure: 
-    beam = mp.Block(size = (sx, width/length, thickness/length), material = mp.Medium(epsilon = eps_silicon) ) # plus two to the beam size to account for pml padding
+    beam = mp.Block(size = (sx + 2, width/length, thickness/length), material = mp.Medium(epsilon = eps_silicon) ) # plus two to the beam size to account for pml padding
     holes = []
     for i in range(len(ylengths)): 
-        holes.append(mp.Ellipsoid(center = mp.Vector3((-(sx)/2 + .5 + pml_padding_x/2 + nummirrors) + i, 0, 0), size = mp.Vector3(xlength, ylengths[i], thickness)/length, e1 = mp.Vector3(1,0,0), e2 = mp.Vector3(0,1,0), e3 = mp.Vector3(0,0,1),
+        holes.append(mp.Ellipsoid(center = mp.Vector3((-(sx)/2 + .5  + nummirrors) + i, 0, 0), size = mp.Vector3(xlength, ylengths[i], thickness)/length, e1 = mp.Vector3(1,0,0), e2 = mp.Vector3(0,1,0), e3 = mp.Vector3(0,0,1),
                           material = mp.Medium(epsilon = 1)))
-        holes.append(mp.Ellipsoid(center = mp.Vector3((+(sx)/2 - .5 - pml_padding_x/2 - nummirrors) - i, 0, 0), size = mp.Vector3(xlength, ylengths[i], thickness)/length, e1 = mp.Vector3(1,0,0), e2 = mp.Vector3(0,1,0), e3 = mp.Vector3(0,0,1),
+        holes.append(mp.Ellipsoid(center = mp.Vector3((+(sx)/2 - .5  - nummirrors) - i, 0, 0), size = mp.Vector3(xlength, ylengths[i], thickness)/length, e1 = mp.Vector3(1,0,0), e2 = mp.Vector3(0,1,0), e3 = mp.Vector3(0,0,1),
                           material = mp.Medium(epsilon = 1)))
 
     for i in range(nummirrors): 
-        holes.append(mp.Ellipsoid( center = mp.Vector3((-(sx)/2 + .5 + pml_padding_x/2) + i , 0, 0 ), size = mp.Vector3(xlength, mirrorlength, thickness)/length, e1 = mp.Vector3(1,0,0), 
+        holes.append(mp.Ellipsoid( center = mp.Vector3((-(sx)/2 + .5 ) + i , 0, 0 ), size = mp.Vector3(xlength, mirrorlength, thickness)/length, e1 = mp.Vector3(1,0,0), 
                      e2 = mp.Vector3(0,1,0), e3 = mp.Vector3(0,0,1)))
-        holes.append(mp.Ellipsoid( center = mp.Vector3((+(sx)/2 - .5 - pml_padding_x/2) - i , 0, 0 ), size = mp.Vector3(xlength, mirrorlength, thickness)/length, e1 = mp.Vector3(1,0,0), 
+        holes.append(mp.Ellipsoid( center = mp.Vector3((+(sx)/2 - .5 ) - i , 0, 0 ), size = mp.Vector3(xlength, mirrorlength, thickness)/length, e1 = mp.Vector3(1,0,0), 
                      e2 = mp.Vector3(0,1,0), e3 = mp.Vector3(0,0,1)))
 
     geometry = [beam]+holes
 
     # Other things for simulation: It is to note that say we want to run for a certian number of periods, then we would divide our time by the frequency below
     fcenter = length/wavelength           # In meep units, the frequency is specified by 1/lambda according to https://meep.readthedocs.io/en/latest/Introduction/#units-in-meep
-    df = .3
+    df = .08
 
     # Broad source to excite modes
     source = mp.Source(mp.GaussianSource(fcenter, fwidth = df), excitation, mp.Vector3(0, 0))
-    pml_layers = [mp.PML(pml_padding_x/2, direction = mp.X),mp.PML(pml_padding/length, direction = mp.Y)]
+    pml_layers = [mp.PML(pml_padding_x, direction = mp.X),mp.PML(pml_padding/length, direction = mp.Y)]
 
     if excitation in Magnetic_field:
         sym = [mp.Mirror(mp.X, phase =-1), mp.Mirror(mp.Y, phase = -1)]
@@ -151,8 +154,8 @@ def defectandmirrors(width: float, length:float, xlength: float, ylengths: list,
         f.gca().xaxis.set_visible(False)
         
         f.suptitle('Geometry of Simulation')
-        plt.axvline(x = -(sx/2) + nummirrors + pml_padding_x/2 , color = 'k', linestyle = '--')
-        plt.axvline(x = (sx/2) - nummirrors - + pml_padding_x/2, color = 'k', linestyle = '--')
+        plt.axvline(x = -(sx/2) + nummirrors  , color = 'k', linestyle = '--')
+        plt.axvline(x = (sx/2) - nummirrors , color = 'k', linestyle = '--')
 
         plt.savefig(os.path.join(dir,"geometry.png"), dpi=300)
         plt.close()
@@ -170,7 +173,7 @@ def defectandmirrors(width: float, length:float, xlength: float, ylengths: list,
         
             
         if mp.am_master():
-            freqs = [m.freq for m in h.modes]
+            freqs = [m.freq for m in h.modes] 
             Qs = [m.Q for m in h.modes]
             
             # Calculate mode volume if requested

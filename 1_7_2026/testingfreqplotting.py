@@ -9,5 +9,5 @@ import os
 import utils as u
 
 taper = u.tapering(380,180,14)
-Qsi, freqs, V = u.defectandmirrors(500, length = 337, xlength= 218, ylengths = taper, mirrorlength=382, excitation = mp.Hz, nummirrors=5, findModes=True,
-                                     modevisulization=True, smoothing = True, resolution = 16, showgeo = True, ModeVolume = True, dir = 'plotting', freqsolver = False)
+Qsi, freqs, V = u.defectandmirrors(500, length = 337, xlength= 218, ylengths = taper, mirrorlength=382, excitation = mp.Hz, nummirrors=12, findModes=True,
+                                     modevisulization=True, smoothing = True, resolution = 64, showgeo = True, ModeVolume = True, dir = 'plotting', freqsolver = False)
