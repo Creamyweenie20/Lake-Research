@@ -99,9 +99,9 @@ def defectandmirrors(width: float, length:float, xlength: float, ylengths: list,
     # Parameters for the computational cell: 
     # pml_padding_x = 2 * math.ceil(2 * wavelength/length)
     pml_padding = length
-    beam_padding = 2 # One for each side
-    air_padding = 5 # one side
-    pml_padding_x = 6 # One side approximately one wavelength
+    beam_padding = 2  # One for each side
+    air_padding = (wavelength/length) # one side
+    pml_padding_x = 4 * air_padding # One side, four wavelengths
     padding_to_pml = 4*length
     sx = 2*(len(ylengths))-1 + 2* nummirrors  #+ pml_padding_x # We will scale the dimensions of everything else by the length (for example we scaled the paddings above by the length)
     sy = 2*(pml_padding + padding_to_pml + width)/length  
@@ -182,11 +182,8 @@ def defectandmirrors(width: float, length:float, xlength: float, ylengths: list,
               
                 V_mode = simulation.modal_volume_in_box(
                     mp.Volume(center=mp.Vector3(), 
-                    size=mp.Vector3(2*len(ylengths)-1, width/length))
+                    size=cell)
                     )
-                print('\n')
-                print(V_mode)
-                print('\n')
             except Exception as e:
                 if mp.am_master():
                     print(f"Mode volume calculation failed: {e}")
