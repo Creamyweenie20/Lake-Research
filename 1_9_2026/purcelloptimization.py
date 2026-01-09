@@ -22,7 +22,7 @@ def optimizer():
         taper = u.tapering(382, x[0], x[1])    
         _, __, ___, result = u.defectandmirrors(width = 500, length = 337, xlength = 218, ylengths = taper, mirrorlength = 382, excitation= mp.Hz, nummirrors= 6,
                                     findModes = True, modevisulization = False, smoothing = True, resolution = 32, showgeo =True, ModeVolume = True, 
-                                    dir =iter_dir, freqsolver = False, lorentz = False)
+                                    dir =iter_dir, freqsolver = False, lorentz = False, effective_index= True)
         
         with open(os.path.join(iter_dir,"optimization.txt"), "w") as f:
                 f.write("Optimization Results\n")

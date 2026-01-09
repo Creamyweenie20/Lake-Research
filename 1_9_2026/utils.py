@@ -94,6 +94,7 @@ def defectandmirrors(width: float, length:float, xlength: float, ylengths: list,
 
     # For the silicon we want to use and our approximate target wavelength is below: 
     eps_silicon = 12
+    refraction_silicon = 3.4
     thickness = 220
     wavelength = 1540 
 
@@ -249,7 +250,7 @@ def defectandmirrors(width: float, length:float, xlength: float, ylengths: list,
                 f.write(f"  Wavelength: {(c/(freq_maxq*1e12))*1e9:.2f} nm\n")
                 if ModeVolume:
                     f.write(f"  Mode volume: {V_mode:.6f}\n")
-                    purcell_factor = purcell_prefix * (((c/(freq_maxq*1e12))/eps_silicon)**3) * (maxq/V_mode)
+                    purcell_factor = purcell_prefix * (((c/(freq_maxq*1e12))/refraction_silicon)**3) * (maxq/V_mode)
                     f.write(f"  Purcell Factor: {purcell_factor: }\n")
                 
                 # Save raw data in CSV format for easy importing
@@ -267,6 +268,9 @@ def defectandmirrors(width: float, length:float, xlength: float, ylengths: list,
                 input_freq = freq_maxq/conv
         else:
             print("WARNING: No modes found by Harminv!")
+
+
+    
 
     if modevisulization and input_freq is not None: 
         source_new = mp.Source(mp.GaussianSource(input_freq, fwidth = .1), excitation, mp.Vector3(0, 0))
