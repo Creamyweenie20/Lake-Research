@@ -18,7 +18,7 @@ def optimizer():
 
         iteration_counter[0] += 1
         iter_num = iteration_counter[0]
-        iter_dir = f'LorentzOptimization2/iteration_{iter_num:03d}'
+        iter_dir = f'LorentzOptimization3/iteration_{iter_num:03d}'
         taper = u.tapering(382, x[0], x[1])    
         result = u.defectandmirrors(width = 500, length = 337, xlength = 218, ylengths = taper, mirrorlength = 382, excitation= mp.Hz, nummirrors= 8,
                                     findModes = True, modevisulization = False, smoothing = True, resolution = 32, showgeo =True, ModeVolume = True, 
@@ -51,5 +51,5 @@ def run_optimizer(x0: list):
 
     return res
 
-x0 = [90.31640525,16]
+x0 = [91.9277092024844,16]
 run_optimizer(x0)

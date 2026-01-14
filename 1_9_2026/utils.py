@@ -108,7 +108,7 @@ def defectandmirrors(width: float, length:float, xlength: float, ylengths: list,
     sx = 2*(len(ylengths))-1 + 2* nummirrors  #+ pml_padding_x # We will scale the dimensions of everything else by the length (for example we scaled the paddings above by the length)
     sy = 2*(pml_padding + padding_to_pml + width)/length  
 
-    cell = mp.Vector3(sx + beam_padding + 2* air_padding + 2 * pml_padding_x,sy)
+    cell = mp.Vector3(sx + beam_padding + 2 * pml_padding_x,sy)
 
     # Defining our waveguide given the parameters, meep assumes periodic structure: 
     beam = mp.Block(size = (sx + 2, width/length, thickness/length), material = mp.Medium(epsilon = eps_silicon) ) # plus two to the beam size to account for pml padding
@@ -312,7 +312,7 @@ def defectandmirrors(width: float, length:float, xlength: float, ylengths: list,
     
     if lorentz: 
         detuning = (freq_max - fcenter)/fcenter
-        kappa_factors = 1/(4 * maxq)
+        kappa_factors = 2/(maxq)
         transmission = kappa_factors ** 2 / (detuning ** 2 + kappa_factors ** 2)
         return transmission
 
