@@ -10,8 +10,8 @@ import utils as u
 
 
 
-iter_dir = f'1_16_2026/Confirmations/LorentzOptimization14'
-taper = u.tapering(382, 254.909, 5)    
+iter_dir = f'1_16_2026/Confirmations/PurcellFactorCalculation'
+taper = u.tapering(382, 287.57864791145323, 5)    
 result = u.defectandmirrors(width = 500, length = 337, xlength = 218, ylengths = taper, mirrorlength = 382, excitation= mp.Ez, nummirrors= 16,
-                                    findModes = True, modevisulization = True, smoothing = True, resolution = 128, showgeo =True, ModeVolume = True, 
+                                    findModes = True, modevisulization = True, smoothing = True, resolution = 32, showgeo =True, ModeVolume = True, 
                                     dir =iter_dir, lorentz = True)
