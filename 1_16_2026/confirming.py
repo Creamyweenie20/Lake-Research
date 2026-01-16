@@ -10,8 +10,10 @@ import utils as u
 
 
 
-iter_dir = f'1_16_2026/Confirmations/PurcellFactorCalculation'
-taper = u.tapering(382, 287.57864791145323, 5)    
-result = u.defectandmirrors(width = 500, length = 337, xlength = 218, ylengths = taper, mirrorlength = 382, excitation= mp.Ez, nummirrors= 16,
-                                    findModes = True, modevisulization = True, smoothing = True, resolution = 32, showgeo =True, ModeVolume = True, 
+iter_dir = f'1_16_2026/Confirmations/Ofnewtapers'
+x0 = [254, 109]
+result = u.defectandmirrors(width = 500, length = 337, mirrorxlength = 218, mirrorlength = 382, 
+                                    ylength = x0[0], xlength = x0[1], nummirrors=8, numdefects=9,
+                                    excitation= mp.Ez, resolution = 16, smoothing = True,
+                                    findModes = True, modevisulization = True, showgeo =True, ModeVolume = True, 
                                     dir =iter_dir, lorentz = True)

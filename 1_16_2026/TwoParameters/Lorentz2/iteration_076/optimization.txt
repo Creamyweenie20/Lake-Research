@@ -1,0 +1,8 @@
+Optimization Results
+==============================
+Optimization Parameters:
+  Iteration: 76 
+  Taper Y Length: 322.77051968259315 
+  Taper X Length: 122.49023014636862 
+  Number of defect holes: 9
+==============================
