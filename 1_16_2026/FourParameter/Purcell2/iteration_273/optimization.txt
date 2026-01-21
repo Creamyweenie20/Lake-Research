@@ -1,0 +1,9 @@
+Optimization Results
+==============================
+Optimization Parameters:
+  Iteration: 273 
+  Taper Y Length: 359.1540042824415 
+  Taper X Length: 131.44884222391482 
+  Width X: 2.4525982659186267
+  Width Y: 3.741165126472854
+==============================

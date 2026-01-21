@@ -18,9 +18,9 @@ def optimizer():
 
         iteration_counter[0] += 1
         iter_num = iteration_counter[0]
-        iter_dir = f'1_16_2026/FourParameter/Lorentz2/iteration_{iter_num:03d}'
+        iter_dir = f'1_16_2026/FourParameter/Lorentz6/iteration_{iter_num:03d}'
         result = u.defectandmirrors2(width = 500, length = 337, mirrorxlength = 218, mirrorlength = 382, 
-                                    ylength = x[0], xlength = x[1], widthx = x[2], widthy = x[3], numholes=16,
+                                    ylength = x[0], xlength = x[1], widthx = x[2], widthy = x[3], numholes=12,
                                     excitation= mp.Ez, resolution = 32, smoothing = True,
                                     findModes = True, modevisulization = True, showgeo =True, ModeVolume = True, 
                                     dir =iter_dir, lorentz = True)
@@ -32,7 +32,8 @@ def optimizer():
                 f.write(f"  Iteration: {iter_num} \n")
                 f.write(f"  Taper Y Length: {x[0]} \n")
                 f.write(f"  Taper X Length: {x[1]} \n")
-                f.write(f"  Number of defect holes: {9}\n")
+                f.write(f"  Width X: {x[2]}\n")
+                f.write(f'  Width Y: {x[3]}\n')
                 f.write("="*30 + "\n")
 
         return result
@@ -52,12 +53,12 @@ def run_optimizer(x0: list):
         bounds=[
              (0,np.inf), 
              (0,np.inf),
-             (2.3, np.inf),
-             (2.4, np.inf)
+             (1, np.inf),
+             (1, np.inf)
         ]
     )
 
     return res
 
-x0 = [254, 118,2.3,3.6]
+x0 = [348.4049648301366 , 157.66304899492627,2.3,3.5]
 run_optimizer(x0)
