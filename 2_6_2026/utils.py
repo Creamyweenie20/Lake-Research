@@ -409,6 +409,19 @@ def defectandmirrors2(width: float, length:float, mirrorxlength: float, mirrorle
     wavelength = 1540 
 
 
+    if excitation in Magnetic_field:
+        # Ez = 0 -> TE
+        sym = [mp.Mirror(mp.X, phase =-1), mp.Mirror(mp.Y, phase = -1)]
+        refraction_silicon = 2.736674116084838
+        beta = 11109379.467855845
+        eps_silicon = refraction_silicon**2
+    else: 
+        # Hz = 0 -> TM
+        sym = [mp.Mirror(mp.X, phase = 1), mp.Mirror(mp.Y, phase = 1)]
+        refraction_silicon = 1.5464070772068217 # Found retrospectively for now
+        beta = 6277555.274665322
+        eps_silicon = refraction_silicon**2
+
     #Change Verbosity to how much information you want the simulations to output during runtime
     mp.verbosity(1)
     if mp.am_master(): 
@@ -511,10 +524,7 @@ def defectandmirrors2(width: float, length:float, mirrorxlength: float, mirrorle
     df = .2
     source = mp.Source(mp.GaussianSource(fcenter, fwidth = df), excitation, center = mp.Vector3(0, 0), size = mp.Vector3(0,0))
     pml_layers = [mp.PML(pml_padding_x, direction = mp.X),mp.PML(pml_padding/length, direction = mp.Y)]
-    if excitation in Magnetic_field:
-        sym = [mp.Mirror(mp.X, phase =-1), mp.Mirror(mp.Y, phase = -1)]
-    else: 
-        sym = [mp.Mirror(mp.X, phase = 1), mp.Mirror(mp.Y, phase = 1)]
+    
 
 
     simulation = mp.Simulation(
@@ -625,7 +635,10 @@ def defectandmirrors2(width: float, length:float, mirrorxlength: float, mirrorle
                 f.write(f"  Q factor: {maxq:.2f}\n")
                 f.write(f"  Wavelength: {(c/(freq_maxq*1e12))*1e9:.2f} nm\n")
                 if ModeVolume:
-                    f.write(f"  Mode volume: {(V_mode*length**2)/(wavelength_max_nm/refraction_silicon)**2:.6f} (lambda/n)^2\n")
+                    k0 = freq_maxq*2*np.pi / c 
+                    h = np.sqrt(refraction_silicon**2 * k0**2 - beta**2)
+                    prefactor = 2*np.sin(h * thickness / 2) / (h*wavelength_max_nm*1e-9 /  (2*np.pi*refraction_silicon))
+                    f.write(f"  Mode volume: {prefactor * (V_mode*length**2)/(wavelength_max_nm/refraction_silicon)**2:.6f} (lambda/n)^3\n")
                     purcell_factor = purcell_prefix * ( wavelength_max_nm/refraction_silicon)**3 * (maxq/ (V_mode * length**2 * thickness) )
                     f.write(f"  Extrapolated Purcell Factor: {purcell_factor}\n")
                 f.write("\n" + "="*150 + "\n")

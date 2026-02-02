@@ -67,5 +67,7 @@ solver2 = Newton(f = lambda b: f2(b,w,d),
                 bounds = [n2*k0, n1*k0])
 
 
-root = solver2.solve(guess = 1.02 * n2 * k0)
-print(f'The propagation constant of the TM fundemental mode is: {root}, which is an effective index of {root/(w/c)}')
+root2 = solver2.solve(guess = 1.02 * n2 * k0)
+print(f'The propagation constant of the TM fundemental mode is: {root2}, which is an effective index of {root2/(w/c)}')
+
+#V = 0.958629 * 2* np.sin()
