@@ -5,7 +5,7 @@ from Newton import Newton
 
 
 c = 3e8
-w = 2*np.pi*193.824246e12
+w = 2*np.pi*193e12
 k0 = w/c
 d = 220e-9
 n1 = 3.4

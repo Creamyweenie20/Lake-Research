@@ -414,13 +414,13 @@ def defectandmirrors2(width: float, length:float, mirrorxlength: float, mirrorle
         sym = [mp.Mirror(mp.X, phase =-1), mp.Mirror(mp.Y, phase = -1)]
         refraction_silicon = 2.736674116084838
         beta = 11109379.467855845
-        eps_silicon = refraction_silicon**2
+        
     else: 
         # Hz = 0 -> TM
         sym = [mp.Mirror(mp.X, phase = 1), mp.Mirror(mp.Y, phase = 1)]
         refraction_silicon = 1.5464070772068217 # Found retrospectively for now
         beta = 6277555.274665322
-        eps_silicon = refraction_silicon**2
+        
 
     #Change Verbosity to how much information you want the simulations to output during runtime
     mp.verbosity(1)
